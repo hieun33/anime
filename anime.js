@@ -10,15 +10,17 @@ btn.addEventListener('click', () => {
 
 function anime(selector, option) {
   const startTime = performance.now();
-  const currentValue = parseInt(getComputedStyle(selector)[option.prop]);
+  let currentValue = parseInt(getComputedStyle(selector)[option.prop]);
 
 //옵션으로 전달받은 속성값이 문자열이면 %처리를 위해 option.value값을 실수로 보정
 const isString = typeof option.value;
-isString === 'string' && (option.value = parseFloat(option.value));
+if (isString === 'string'){
+    const winW = window.innerWidth;
+    currentValue = (currentValue / winW) * 100;
+    option.value = parseFloat(option.value);
+}
   
   (option.value !== currentValue) && requestAnimationFrame(run);
-
-
 
   function run(time) {
     let timelast = time - startTime;
