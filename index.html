@@ -15,6 +15,19 @@
       <div id="box"></div>
     </section>
   
+    <script>
+        const btn = document.querySelector('button');
+        const box = document.querySelector('#box');
+    
+        btn.addEventListener('click', () => {
+          new Anime(box, {
+            prop: 'margin-left',
+            value: 300,
+            duration: 500
+          })
+        })
+      </script>
+      
   </body>
 </html>
 

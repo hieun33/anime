@@ -1,13 +1,3 @@
-const btn = document.querySelector('button');
-const box = document.querySelector('#box');
-btn.addEventListener('click', () => {
-    new Anime(box, {
-        prop: 'margin-left',
-        value: 300,
-        duration: 500
-    })
-});
-
 class Anime{
  constructor(selector, option){
     this.selector = selector;
@@ -29,19 +19,18 @@ if (this.isString === 'string'){
     const parenH = parseInt(getComputedStyle(this.selector.parentElement).height);
     const x = ['margin-left', 'margin-right', 'left', 'right', 'width'];
     const y = ['margin-top', 'margin-bottom', 'top', 'bottom', 'height'];
-
-
-    //퍼센트로 동작할지도 모를 가로폭에 관련된 속성명을 반복을 돌며 조건문
-    //해당 조건일때 해당 요소의 직계부모 넓이값을 기준으로 변환한 퍼센트 값을 currnetValue에 담음
     for(let cond of x) (this.option.prop === cond) && (this.currentValue = (this.currentValue / parenW) * 100); 
     for(let cond of y) (this.option.prop === cond) && (this.currentValue = (this.currentValue / parenH) * 100); 
      
     this.option.value = parseFloat(this.option.value);
 }
-(this.option.value !== this.currentValue) && requestAnimationFrame(this.run);
+(this.option.value !== this.currentValue)
+      //requestAnimationFrame에 콜백으로 같은 코드블록상에 있는 일반함수가 들어가면 time값이 자동으로 인수로 전달됨
+      //prototype에 담겨있는 메서드에서는 자동으로 인수값이 전달되지 않기 때문에
+      //wrapping함수로 패키징을 해서 직접 time 인수를 전달
+      && requestAnimationFrame((time) => this.run(time));
+  }
 
-
-    }
     run(time) {
         let timelast = time - this.startTime;
         let progress = timelast / this.option.duration;
@@ -49,7 +38,7 @@ if (this.isString === 'string'){
         (progress < 0) && (progress = 0);
         (progress > 1) && (progress = 1);
         (progress < 1) 
-        ? requestAnimationFrame(this.run)
+        ? requestAnimationFrame((time) => this.run(time))
         : this.option.callback && setTimeout(()=> this.option.callback(), 0)
         
         
