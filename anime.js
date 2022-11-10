@@ -2,16 +2,33 @@ const btn = document.querySelector('button');
 const box = document.querySelector('#box');
 btn.addEventListener('click', () => {
   anime(box, {
-    prop: 'opacity',
-    value: 0.1,
-    duration: 1000
+    prop: 'margin-left',
+    value: 300,
+    duration: 500,
+    callback: () => {
+        anime(box, {
+            prop: 'margin-top',
+            value: 200,
+            duration: 500,
+        })
+    }
   })
 });
+/*
+    window.scrollY :현재 스크롤된 거리값
+    siwndow.scroll(x.y) : x,y출 스크롤 강제이동
+*/
 
 function anime(selector, option) {
   const startTime = performance.now();
- //px, % 값을 모두 커버하기 위해서 parseFloat으로 속성값 반환
- let currentValue = parseFloat(getComputedStyle(selector)[option.prop]);
+  let currentValue = null;
+  
+  //만약 옵션의 속성명이 scroll이면 scrollY값 구하고
+  //그렇지 않으면 getComputedStyle 반환값 저장
+  option.prop === 'scroll' 
+    ? currentValue = selector.scrollY 
+    : currentValue = parseFloat(getComputedStyle(selector)[option.prop]);
+ 
 
 //옵션으로 전달받은 속성값이 문자열이면 %처리를 위해 option.value값을 실수로 보정
 const isString = typeof option.value;
@@ -27,7 +44,7 @@ if (isString === 'string'){
     for(let cond of x) (option.prop === cond) && ( currentValue = (currentValue / parenW) * 100); 
     for(let cond of y) (option.prop === cond) && (currentValue = (currentValue / parenH) * 100); 
      
-      option.value = parseFloat(option.value);
+    option.value = parseFloat(option.value);
 }
   
   (option.value !== currentValue) && requestAnimationFrame(run);
@@ -38,17 +55,17 @@ if (isString === 'string'){
 
     (progress < 0) && (progress = 0);
     (progress > 1) && (progress = 1);
-    if (progress < 1) {
-      requestAnimationFrame(run);
-    } else {
-      option.callback && option.callback();
-    }
+    (progress < 1) 
+    ? requestAnimationFrame(run)
+    : option.callback && setTimeout(()=>option.callback(), 0)
+    
     
     let result = currentValue + ((option.value - currentValue) * progress);
    //만약 isString값이 문자열 뒤에 퍼센트 적용, 그렇지 않으면 px적용
    if (isString === 'string') selector.style[option.prop] = `${result}%`;
   //만약 속성명이 opacity이면 실수값을 바로 적용
-    else if (option.prop === 'opacity') selector.style[option.prop] = result;
+   else if (option.prop === 'opacity') selector.style[option.prop] = result;
+   else if (option.prop === 'scroll') window.scroll(0, result)
    else selector.style[option.prop] = `${result}px`;
   }
 
