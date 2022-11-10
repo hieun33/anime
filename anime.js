@@ -6,7 +6,7 @@
 const btn = document.querySelector('button');
 const box = document.querySelector('#box');
 const speed = 1000; //1초
-//let num = 0;
+
 let startTime = null;
 
 btn.addEventListener('click',()=>{  //버튼클릭하면 requestAnimationFrame호출
@@ -34,20 +34,11 @@ function move(time){
 
 
     // `반복횟수 : ${num} / 진행률: ${progress} / 진행된시간${timelast}`
-    if(progress < 1){
-        //num++;
-        console.log(`반복시 움직인 누적거리값: ${300* progress} ` )
+    if (progress < 1) {
+        console.log(`반복시 움직인 누적거리값: ${300 * progress}`);
         requestAnimationFrame(move);
-        box.style.marginleft = `${300 * progress}px`
+        box.style.marginLeft = `${300 * progress}px`;
+      }
+      console.log(progress * 300);
     }
-    console.log(progress*300);
 
-    // if(num < 100){     //100보다 작으면
-    //     num++; //num1씩중가
-    //     requestAnimationFrame(move);  //requestAnimationFrame이 move를 호출,둘이 번갈아가며 계속 호출
-    // }
-    
-    // box.style.marginLeft = `${num}px`;
-
-
-}
